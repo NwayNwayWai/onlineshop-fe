@@ -1,14 +1,26 @@
 // import { User } from "@/types/User";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import CryptoJS from "crypto-js";
+import jwt_decode from "jwt-decode";
 
-export const setUserInfo = (userInfo: any) => {
-  const expires = new Date();
-  expires.setDate(expires.getDate());
+export const setUserInfo = (token: string, userInfo: any) => {
+  const { exp } = jwt_decode(token) as any;
+  const expires = new Date(exp * 1000); // exp is in seconds, convert to milliseconds
+
   const cipherUserInfo = CryptoJS.AES.encrypt(
     JSON.stringify(userInfo),
     "userInfo"
   ).toString();
+
+  const cipherText = CryptoJS.AES.encrypt(
+    JSON.stringify(token),
+    "token"
+  ).toString();
+
+  setCookie("token", cipherText, {
+    expires,
+  });
+
   setCookie("userInfo", cipherUserInfo, {
     expires,
   });

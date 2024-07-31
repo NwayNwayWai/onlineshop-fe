@@ -2,7 +2,7 @@
 import React, { useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { getUserInfo, logout } from "@/utils/auth";
+import { getToken, getUserInfo, logout } from "@/utils/auth";
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 
 import { Button } from "../ui/button";
@@ -27,7 +27,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ hideMenu = false }: HeaderProps) => {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const userInfo = getUserInfo();
+  const token = getToken();
   const pathName = usePathname();
 
   const HeaderAvatar = () => {
@@ -53,11 +53,7 @@ const Header: React.FC<HeaderProps> = ({ hideMenu = false }: HeaderProps) => {
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={async () => {
-                  if (userInfo) router.push("/setting");
-                }}
-              >
+              <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </DropdownMenuItem>
@@ -67,7 +63,7 @@ const Header: React.FC<HeaderProps> = ({ hideMenu = false }: HeaderProps) => {
               onClick={async (ev) => {
                 logout();
                 router.refresh();
-                router.push("/dashboard");
+                router.push("/login");
               }}
             >
               <LogOut className="mr-2 h-4 w-4" />
@@ -98,7 +94,7 @@ const Header: React.FC<HeaderProps> = ({ hideMenu = false }: HeaderProps) => {
               />
             </Link>
           </Box>
-          {userInfo?.id ? (
+          {!token ? (
             <Flex>
               <Link href="/login">
                 <Button variant="link">Login</Button>
