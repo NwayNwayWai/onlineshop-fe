@@ -1,10 +1,8 @@
 "use client";
-import React, { useTransition } from "react";
-import { usePathname, useRouter } from "next/navigation";
-
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getToken, getUserInfo, logout } from "@/utils/auth";
-import { Box, Card, Flex, Text } from "@radix-ui/themes";
-
+import { Box, Flex } from "@radix-ui/themes";
 import { Button } from "../ui/button";
 import { Image } from "../ui/image";
 import { LogOut, ShoppingCart, User } from "lucide-react";
@@ -26,54 +24,74 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ hideMenu = false }: HeaderProps) => {
   const router = useRouter();
-  const [, startTransition] = useTransition();
-  const token = getToken();
-  const pathName = usePathname();
+  const [token, setToken] = useState<string | null>(null);
+  const [userInfo, setUserInfo] = useState<{
+    name: string;
+    email: string;
+    avatarUrl?: string;
+  } | null>(null);
 
-  const HeaderAvatar = () => {
-    return (
-      <Flex className="space-x-2">
-        <Link href="/cart">
-          <Box className="p-2">
-            <ShoppingCart />
-          </Box>
-        </Link>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Avatar>
-              <AvatarImage
-                src={"/upload/images/boylogo.png"}
-                alt="profile Image"
-                className="bg-primary"
-              />
-              <AvatarFallback>F2L</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={async (ev) => {
-                logout();
-                router.refresh();
-                router.push("/login");
-              }}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </Flex>
-    );
+  useEffect(() => {
+    const fetchTokenAndUserInfo = () => {
+      const token = localStorage.getItem("authToken");
+      const userInfo = localStorage.getItem("userInfo");
+      setToken(token);
+      setUserInfo(userInfo ? JSON.parse(userInfo) : null);
+    };
+
+    fetchTokenAndUserInfo();
+    window.addEventListener("storage", fetchTokenAndUserInfo);
+
+    return () => {
+      window.removeEventListener("storage", fetchTokenAndUserInfo);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setToken(null);
+    setUserInfo(null);
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userInfo");
+    router.push("/dashboard");
   };
+
+  const HeaderAvatar = () => (
+    <Flex className="space-x-2">
+      <Link href="/cart">
+        <Box className="p-2">
+          <ShoppingCart />
+        </Box>
+      </Link>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Avatar>
+            <AvatarImage
+              src={userInfo?.avatarUrl || "/upload/images/boylogo.png"}
+              alt="profile Image"
+              className="bg-primary"
+            />
+            <AvatarFallback>F2L</AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </Flex>
+  );
 
   return (
     <Box className="relative z-10">
@@ -89,8 +107,8 @@ const Header: React.FC<HeaderProps> = ({ hideMenu = false }: HeaderProps) => {
                 src="/upload/images/logo.png"
                 alt="logo"
                 width={100}
-                height={600}
-                className="w-[100px] h-[60px] mr-[20px] "
+                height={60}
+                className="w-[100px] h-[60px] mr-[20px]"
               />
             </Link>
           </Box>
