@@ -208,7 +208,11 @@ const Register = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input {...field} placeholder="Phone Number" />
+                    <Input
+                      {...field}
+                      placeholder="Phone Number"
+                      type="number"
+                    />
                   </FormControl>
                 </FormItem>
               )}

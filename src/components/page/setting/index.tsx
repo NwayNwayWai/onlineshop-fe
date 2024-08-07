@@ -14,9 +14,11 @@ const Settings: React.FC = () => {
   return (
     <Flex justify="center" className="p-2">
       <Tabs defaultValue="account" className="w-[700px]">
-        <TabsList className="grid w-full grid-cols-2 bg-primary/20">
-          <TabsTrigger value="account">Account</TabsTrigger>
-          <TabsTrigger value="pp">Security</TabsTrigger>
+        <TabsList className="grid w-full  bg-primary/20">
+          <TabsTrigger value="account" className="w-full">
+            Profile
+          </TabsTrigger>
+          {/* <TabsTrigger value="pp">Security</TabsTrigger> */}
         </TabsList>
         <TabsContent value="account">
           <Card>
@@ -25,13 +27,13 @@ const Settings: React.FC = () => {
             </Box>
           </Card>
         </TabsContent>
-        <TabsContent value="pp">
+        {/* <TabsContent value="pp">
           <Card>
             <Box>
               <PrivacySettings />
             </Box>
           </Card>
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
     </Flex>
   );

@@ -56,6 +56,10 @@ const Header: React.FC<HeaderProps> = ({ hideMenu = false }: HeaderProps) => {
     router.push("/dashboard");
   };
 
+  const profile = () => {
+    router.push("/setting");
+  };
+
   const HeaderAvatar = () => (
     <Flex className="space-x-2">
       <Link href="/cart">
@@ -78,7 +82,7 @@ const Header: React.FC<HeaderProps> = ({ hideMenu = false }: HeaderProps) => {
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={profile}>
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>

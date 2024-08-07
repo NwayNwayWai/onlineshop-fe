@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { z } from "zod";
@@ -15,7 +15,9 @@ import { Text } from "@/components/ui/typo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Flex, Grid, Section } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
+
 import { logout } from "@/utils/auth";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 const phoneRegExp = /^[0-9]{11}$/;
 
@@ -44,6 +46,13 @@ const AccountSettings = () => {
     resolver: zodResolver(validationSchema),
   });
 
+  const [originalData, setOriginalData] = useState<AccountSettingsForm | null>(
+    null
+  );
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConPassword, setShowConPassword] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
@@ -52,13 +61,18 @@ const AccountSettings = () => {
   } = methods;
 
   useEffect(() => {
-    // Fetch user data from local storage
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setIsAuthenticated(false);
+      return;
+    }
+
+    setIsAuthenticated(true);
     const usersString = localStorage.getItem("users");
     if (usersString) {
       const users = JSON.parse(usersString);
-      // Assume the first user is the logged-in user
-      const loggedInUser = users[0]; // Replace with actual logic to identify the logged-in user
-      // Set default values in the form
+      const loggedInUser = users[0];
+      setOriginalData(loggedInUser);
       setValue("email", loggedInUser.email);
       setValue("userName", loggedInUser.userName);
       setValue("firstName", loggedInUser.firstName);
@@ -67,19 +81,43 @@ const AccountSettings = () => {
       setValue("password", loggedInUser.password);
       setValue("conPassword", loggedInUser.password);
     }
-  }, [setValue]);
+  }, [setValue, router]);
+
   const submit: SubmitHandler<AccountSettingsForm> = async (data) => {
-    // Save updated user data
     const usersString = localStorage.getItem("users");
     if (usersString) {
       let users = JSON.parse(usersString);
-      // Assume the first user is the logged-in user
-      const loggedInUserIndex = 0; // Replace with actual logic to identify the logged-in user
+      const loggedInUserIndex = 0;
       users[loggedInUserIndex] = data;
       localStorage.setItem("users", JSON.stringify(users));
       router.push("/dashboard");
     }
   };
+
+  const resetForm = () => {
+    if (originalData) {
+      setValue("email", originalData.email);
+      setValue("userName", originalData.userName);
+      setValue("firstName", originalData.firstName);
+      setValue("lastName", originalData.lastName);
+      setValue("phoneNo", originalData.phoneNo);
+      setValue("password", originalData.password);
+      setValue("conPassword", originalData.password);
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <Box className="p-4 text-center">
+        <p className="text-red-600 font-semibold">
+          User is not logged in. Please log in to access this page.
+        </p>
+        <Link href="/login">
+          <Button className="mt-4">Go to Login</Button>
+        </Link>
+      </Box>
+    );
+  }
 
   return (
     <Box className="p-4">
@@ -165,12 +203,25 @@ const AccountSettings = () => {
               </FormLabel>
               <FormItem>
                 <FormControl>
-                  <Input
-                    {...register("password")}
-                    id="password"
-                    placeholder="Enter Password"
-                    type="password"
-                  />
+                  <div className="relative">
+                    <Input
+                      {...register("password")}
+                      id="password"
+                      placeholder="Enter Password"
+                      type={showPassword ? "text" : "password"}
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOffIcon className="w-5 h-5" />
+                      ) : (
+                        <EyeIcon className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
                 </FormControl>
               </FormItem>
               {errors.password && <p>{errors.password.message}</p>}
@@ -184,18 +235,31 @@ const AccountSettings = () => {
               </FormLabel>
               <FormItem>
                 <FormControl>
-                  <Input
-                    {...register("conPassword")}
-                    id="conPassword"
-                    placeholder="Confirm Password"
-                    type="password"
-                  />
+                  <div className="relative">
+                    <Input
+                      {...register("conPassword")}
+                      id="conPassword"
+                      placeholder="Confirm Password"
+                      type={showConPassword ? "text" : "password"}
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      onClick={() => setShowConPassword(!showConPassword)}
+                    >
+                      {showConPassword ? (
+                        <EyeOffIcon className="w-5 h-5" />
+                      ) : (
+                        <EyeIcon className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
                 </FormControl>
               </FormItem>
               {errors.conPassword && <p>{errors.conPassword.message}</p>}
             </Section>
           </Grid>
-          <Section py="0" px="0" className="mb-4 w-full">
+          <Section py="0" px="0" className="mb-4">
             <FormLabel
               htmlFor="phoneNo"
               className="font-medium text-[14px] pb-1"
@@ -208,31 +272,20 @@ const AccountSettings = () => {
                   {...register("phoneNo")}
                   id="phoneNo"
                   placeholder="Phone Number"
+                  type="number"
                 />
               </FormControl>
             </FormItem>
             {errors.phoneNo && <p>{errors.phoneNo.message}</p>}
           </Section>
-
-          <Flex justify="center" className="space-x-2">
-            <Link href={"/dashboard"}>
-              <Button type="button" className="mt-4 w-[180px]">
-                <div className="text-white font-semibold">Reset</div>
-              </Button>
-            </Link>
-            <Button type="submit" className="mt-4 w-[180px]">
-              <div className="text-white font-semibold">Save Changes</div>
+          <Flex justify="between" className="mt-4">
+            <Button type="button" variant="outline" onClick={resetForm}>
+              Reset
             </Button>
+            <Button type="submit">Save Changes</Button>
           </Flex>
         </form>
       </FormProvider>
-      <Button
-        type="button"
-        className="mt-4 w-full bg-red-600"
-        onClick={() => logout()}
-      >
-        <div className="text-white font-semibold">Logout</div>
-      </Button>
     </Box>
   );
 };

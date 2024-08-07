@@ -54,7 +54,7 @@ const Login = () => {
 
       if (user) {
         // Store user data in local storage
-        localStorage.setItem("authToken", "your-token-here"); // or use a real token
+        localStorage.setItem("authToken", "your-token-here");
         localStorage.setItem("userInfo", JSON.stringify(user));
         router.push("/dashboard");
       } else {
