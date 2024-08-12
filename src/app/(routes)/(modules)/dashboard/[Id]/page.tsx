@@ -5,6 +5,7 @@ import PageLayout from "@/components/layout";
 import { findProductById } from "@/utils/findProductById";
 
 import DashboardClothesDetail from "@/components/page/dashboard/[Id]";
+import DetailItem from "@/components/shared/detail-item";
 
 interface ClothesDetailProps {
   params: {
@@ -17,11 +18,7 @@ const DashboardClothesDetailPage = async (props: ClothesDetailProps) => {
 
   const detail = await findProductById(Id);
 
-  return (
-    <PageLayout>
-      {detail && <DashboardClothesDetail detail={detail} />}
-    </PageLayout>
-  );
+  return <PageLayout>{detail && <DetailItem detail={detail} />}</PageLayout>;
 };
 
 export default DashboardClothesDetailPage;

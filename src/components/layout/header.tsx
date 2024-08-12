@@ -5,7 +5,13 @@ import { getToken, getUserInfo, logout } from "@/utils/auth";
 import { Box, Flex } from "@radix-ui/themes";
 import { Button } from "../ui/button";
 import { Image } from "../ui/image";
-import { LogOut, ShoppingCart, User } from "lucide-react";
+import {
+  LogOut,
+  ShoppingBasket,
+  ShoppingCart,
+  User,
+  Warehouse,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +35,7 @@ const Header: React.FC<HeaderProps> = ({ hideMenu = false }: HeaderProps) => {
     name: string;
     email: string;
     avatarUrl?: string;
+    isAdmin?: boolean;
   } | null>(null);
 
   useEffect(() => {
@@ -51,8 +58,7 @@ const Header: React.FC<HeaderProps> = ({ hideMenu = false }: HeaderProps) => {
     logout();
     setToken(null);
     setUserInfo(null);
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("userInfo");
+
     router.push("/dashboard");
   };
 
@@ -62,11 +68,19 @@ const Header: React.FC<HeaderProps> = ({ hideMenu = false }: HeaderProps) => {
 
   const HeaderAvatar = () => (
     <Flex className="space-x-2">
-      <Link href="/cart">
-        <Box className="p-2">
-          <ShoppingCart />
-        </Box>
-      </Link>
+      {!userInfo?.isAdmin ? (
+        <Link href="/cart">
+          <Box className="p-2">
+            <ShoppingCart />
+          </Box>
+        </Link>
+      ) : (
+        <Link href="/order-lists">
+          <Box className="p-2">
+            <Warehouse />
+          </Box>
+        </Link>
+      )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar>

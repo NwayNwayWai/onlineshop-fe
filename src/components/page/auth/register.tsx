@@ -13,10 +13,11 @@ import { Box, Flex, Grid, Section } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "sonner";
 
 const phoneRegExp = /^[0-9]{11}$/;
 
-const validationSchema = z
+export const validationSchema = z
   .object({
     email: z.string().email().min(1, { message: "Email is required!" }),
     password: z
@@ -35,13 +36,14 @@ const validationSchema = z
       .regex(phoneRegExp, {
         message: "Phone number must be exactly 11 digits long",
       }),
+    isAdmin: z.boolean().catch(false),
   })
   .refine((data) => data.password === data.conPassword, {
     message: "Passwords must match!",
     path: ["conPassword"],
   });
 
-type RegisterRequest = z.infer<typeof validationSchema>;
+export type RegisterRequest = z.infer<typeof validationSchema>;
 
 const Register = () => {
   const router = useRouter();
@@ -62,9 +64,17 @@ const Register = () => {
 
   const submit = (data: RegisterRequest) => {
     const users = JSON.parse(localStorage.getItem("users") || "[]");
-    users.push(data);
-    localStorage.setItem("users", JSON.stringify(users));
-    router.push("/dashboard");
+    const emailExists = users.some((user: any) => user?.email === data.email);
+
+    if (emailExists) {
+      toast.error("Email already exists. Please use a different email.");
+    } else {
+      // If the email doesn't exist, add the new user and update localStorage
+      users.push(data);
+      localStorage.setItem("users", JSON.stringify(users));
+      router.push("/login");
+      toast.success("Please login again");
+    }
   };
 
   return (
@@ -200,7 +210,7 @@ const Register = () => {
             </Section>
           </Grid>
 
-          <Section py="0" px="0" className="mb-4 w-full">
+          <Section py="0" px="0" className=" w-full">
             <Text className="font-medium text-[14px] pb-1">Phone Number</Text>
             <FormField
               control={form.control}
@@ -218,17 +228,32 @@ const Register = () => {
               )}
             />
           </Section>
+          <Section py="0" px="0" className=" w-full">
+            <Text className="font-medium text-[14px] pb-1">Phone Number</Text>
+            <FormField
+              control={form.control}
+              name="isAdmin"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Flex align="center" className="space-x-2">
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                      <div className="text-base">Admin</div>
+                    </Flex>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </Section>
 
           <Button type="submit" className="mt-4 w-full">
             <div className="text-white font-semibold">Register</div>
           </Button>
         </form>
       </Form>
-
-      <Flex align="center" className="pt-[10px] space-x-2">
-        <Checkbox />
-        <div className="text-base">Remember me</div>
-      </Flex>
 
       <div className="text-center mt-4">
         <Link href="/login" className="text-primary hover:underline">

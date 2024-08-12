@@ -69,9 +69,13 @@ const AccountSettings = () => {
 
     setIsAuthenticated(true);
     const usersString = localStorage.getItem("users");
-    if (usersString) {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo") ?? "");
+
+    if (usersString && userInfo) {
       const users = JSON.parse(usersString);
-      const loggedInUser = users[0];
+      const user = users.find((user: any) => user.email === userInfo?.email);
+
+      const loggedInUser = user;
       setOriginalData(loggedInUser);
       setValue("email", loggedInUser.email);
       setValue("userName", loggedInUser.userName);

@@ -22,13 +22,14 @@ interface DetailProps {
 
 const BoyClothesDetail: React.FC<DetailProps> = ({ detail }) => {
   const router = useRouter();
-  const { productName, price, description, imageUrl, size } = detail as Product;
+  const { id, productName, price, description, imageUrl, size } =
+    detail as Product;
 
   const [selectedSize, setSelectedSize] = useState<string>(size[0]);
   const [quantity, setQuantity] = useState<number>(1);
 
   if (!productName || !price || !description || !imageUrl || !size) {
-    return <Text>Loading...</Text>; // Handle loading state or error gracefully
+    return <Text>Loading...</Text>;
   }
 
   const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -47,6 +48,7 @@ const BoyClothesDetail: React.FC<DetailProps> = ({ detail }) => {
 
   const handleAddToCart = async () => {
     const cartItem = {
+      id: id,
       productName,
       price,
       description,
@@ -89,7 +91,7 @@ const BoyClothesDetail: React.FC<DetailProps> = ({ detail }) => {
         </Box>
         <Box>
           <Text className="text-gray-800 mb-4 ">
-            Price : ${price.toFixed(2)}
+            Price : {price.toFixed(2)}
           </Text>
         </Box>
         <Box>
@@ -131,7 +133,7 @@ const BoyClothesDetail: React.FC<DetailProps> = ({ detail }) => {
             </Box>
             <Box>
               <Text className="text-gray-800 mb-4 ">
-                ${handleCalculateTotal()}
+                {handleCalculateTotal()}
               </Text>
             </Box>
           </Flex>

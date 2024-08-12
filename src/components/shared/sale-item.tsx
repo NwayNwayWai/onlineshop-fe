@@ -31,7 +31,7 @@ const SaleItem: React.FC<Props> = ({ item, index }) => {
         {item.productName}
       </Text>
       <Text className="text-center text-gray-600 mt-2">
-        ${item.price.toFixed(2)}
+        {item.price.toFixed(2)} MMK
       </Text>
     </Box>
   );

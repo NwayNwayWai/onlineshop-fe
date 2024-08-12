@@ -25,7 +25,8 @@ interface detailProps {
 
 const GirlClothesDetail: React.FC<detailProps> = ({ detail }) => {
   const router = useRouter();
-  const { productName, price, description, imageUrl, size } = detail as Product;
+  const { id, productName, price, description, imageUrl, size } =
+    detail as Product;
 
   const [selectedSize, setSelectedSize] = useState<string>(size[0]);
   const [quantity, setQuantity] = useState<number>(1);
@@ -47,6 +48,36 @@ const GirlClothesDetail: React.FC<detailProps> = ({ detail }) => {
     const totalPrice = price * quantity;
     return totalPrice.toFixed(2);
   };
+  const handleAddToCart = async () => {
+    const cartItem = {
+      id,
+      productName,
+      price,
+      description,
+      imageUrl,
+      selectedSize,
+      quantity,
+      totalPrice: handleCalculateTotal(),
+    };
+
+    try {
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cartItem),
+      });
+
+      if (response.ok) {
+        router.push("/cart");
+      } else {
+        console.error("Failed to add item to cart");
+      }
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
+  };
 
   return (
     <Box className="p-4">
@@ -65,8 +96,7 @@ const GirlClothesDetail: React.FC<detailProps> = ({ detail }) => {
         </Box>
         <Box>
           <Text className="text-gray-800 mb-4 ">
-            {" "}
-            Price : ${price.toFixed(2)}
+            Price : {price.toFixed(2)}
           </Text>
         </Box>
         <Box>
@@ -75,7 +105,7 @@ const GirlClothesDetail: React.FC<detailProps> = ({ detail }) => {
         <Grid>
           <Box className="flex items-center mb-4">
             <Text className="mr-2 w-[150px]">Choose Size:</Text>
-            <Select>
+            <Select onValueChange={setSelectedSize}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Choose Size" />
               </SelectTrigger>
@@ -103,21 +133,21 @@ const GirlClothesDetail: React.FC<detailProps> = ({ detail }) => {
             />
           </Box>
           <Flex align="center">
-            <Box className=" w-[160px]">
+            <Box className="w-[160px]">
               <Text className="text-gray-800 mb-4">Total Price:</Text>
             </Box>
             <Box>
               <Text className="text-gray-800 mb-4 ">
-                ${handleCalculateTotal()}
+                {handleCalculateTotal()}
               </Text>
             </Box>
           </Flex>
         </Grid>
         <Flex className="space-x-2 pt-6">
-          <Link href={"/girl-clothes"}>
+          <Link href="/girl-clothes">
             <Button variant="outline">Cancel</Button>
           </Link>
-          <Button>Add to Card</Button>
+          <Button onClick={handleAddToCart}>Add to Cart</Button>
         </Flex>
       </Box>
     </Box>

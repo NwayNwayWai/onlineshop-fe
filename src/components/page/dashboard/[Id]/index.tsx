@@ -111,7 +111,7 @@ const DashboardClothesDetail: React.FC<detailProps> = ({ detail }) => {
           </Flex>
         </Grid>
         <Flex className="space-x-2 pt-6">
-          <Link href={"/boy-clothes"}>
+          <Link href={"/dashboard"}>
             <Button variant="outline">Cancel</Button>
           </Link>
           <Button>Add to Card</Button>

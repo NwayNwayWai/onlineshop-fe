@@ -9,6 +9,21 @@ export interface Product {
   size: string[]; // Optional if sizes vary
   imageUrl: string;
   inStock: number;
+  quantity: number;
+}
+
+export interface OrderProduct {
+  id: string;
+  shopperName: string;
+  shopperEmail: string;
+  productName: string;
+  category: string;
+  price: number;
+  description: string;
+  size: string[]; // Optional if sizes vary
+  imageUrl: string;
+  inStock: number;
+  quantity: number;
 }
 
 // Mock data for top items
@@ -23,6 +38,7 @@ export const topItems: Product[] = [
     size: ["Newborn", "3M", "6M", "9M", "12M"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 50,
+    quantity: 0,
   },
   {
     id: "2",
@@ -34,6 +50,7 @@ export const topItems: Product[] = [
     size: ["One Size"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 30,
+    quantity: 0,
   },
   {
     id: "3",
@@ -45,6 +62,7 @@ export const topItems: Product[] = [
     size: ["One Size"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 100,
+    quantity: 0,
   },
   {
     id: "4",
@@ -56,6 +74,7 @@ export const topItems: Product[] = [
     size: ["0-6 Months", "6-12 Months"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 80,
+    quantity: 0,
   },
   {
     id: "5",
@@ -67,6 +86,7 @@ export const topItems: Product[] = [
     size: ["One Size"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 60,
+    quantity: 0,
   },
   {
     id: "6",
@@ -78,6 +98,7 @@ export const topItems: Product[] = [
     size: ["Toddler", "2T-4T"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 40,
+    quantity: 0,
   },
   {
     id: "7",
@@ -89,6 +110,7 @@ export const topItems: Product[] = [
     size: ["One Size"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 70,
+    quantity: 0,
   },
   {
     id: "8",
@@ -100,6 +122,7 @@ export const topItems: Product[] = [
     size: ["Newborn", "0-6 Months"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 90,
+    quantity: 0,
   },
   {
     id: "9",
@@ -111,6 +134,7 @@ export const topItems: Product[] = [
     size: ["0-6 Months", "6-12 Months"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 120,
+    quantity: 0,
   },
   {
     id: "10",
@@ -122,6 +146,7 @@ export const topItems: Product[] = [
     size: ["3-6 Months", "6-12 Months"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 55,
+    quantity: 0,
   },
 ];
 
@@ -137,6 +162,7 @@ export const boyClothes: Product[] = [
     size: ["2T", "3T", "4T", "5T"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 40,
+    quantity: 0,
   },
   {
     id: "12",
@@ -148,6 +174,7 @@ export const boyClothes: Product[] = [
     size: ["2T", "3T", "4T", "5T"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 25,
+    quantity: 0,
   },
   {
     id: "13",
@@ -159,6 +186,7 @@ export const boyClothes: Product[] = [
     size: ["2T", "3T", "4T", "5T"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 35,
+    quantity: 0,
   },
   {
     id: "14",
@@ -170,6 +198,7 @@ export const boyClothes: Product[] = [
     size: ["One Size"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 15,
+    quantity: 0,
   },
   {
     id: "15",
@@ -181,6 +210,7 @@ export const boyClothes: Product[] = [
     size: ["2T", "3T", "4T", "5T"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 20,
+    quantity: 0,
   },
   {
     id: "16",
@@ -192,6 +222,7 @@ export const boyClothes: Product[] = [
     size: ["Toddler", "Youth"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 30,
+    quantity: 0,
   },
   {
     id: "17",
@@ -203,6 +234,7 @@ export const boyClothes: Product[] = [
     size: ["2T", "3T", "4T", "5T"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 18,
+    quantity: 0,
   },
   {
     id: "18",
@@ -214,6 +246,7 @@ export const boyClothes: Product[] = [
     size: ["2T", "3T", "4T", "5T"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 28,
+    quantity: 0,
   },
   {
     id: "19",
@@ -225,6 +258,7 @@ export const boyClothes: Product[] = [
     size: ["2T", "3T", "4T", "5T"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 22,
+    quantity: 0,
   },
   {
     id: "20",
@@ -236,6 +270,7 @@ export const boyClothes: Product[] = [
     size: ["Toddler", "Youth"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 32,
+    quantity: 0,
   },
 ];
 
@@ -251,6 +286,7 @@ export const womenClothes: Product[] = [
     size: ["S", "M", "L", "XL"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 20,
+    quantity: 0,
   },
   {
     id: "22",
@@ -262,6 +298,7 @@ export const womenClothes: Product[] = [
     size: ["S", "M", "L", "XL"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 15,
+    quantity: 0,
   },
   {
     id: "23",
@@ -273,6 +310,7 @@ export const womenClothes: Product[] = [
     size: ["S", "M", "L", "XL"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 30,
+    quantity: 0,
   },
   {
     id: "24",
@@ -284,6 +322,7 @@ export const womenClothes: Product[] = [
     size: ["S", "M", "L", "XL"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 25,
+    quantity: 0,
   },
   {
     id: "25",
@@ -295,6 +334,7 @@ export const womenClothes: Product[] = [
     size: ["S", "M", "L", "XL"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 35,
+    quantity: 0,
   },
   {
     id: "26",
@@ -306,6 +346,7 @@ export const womenClothes: Product[] = [
     size: ["5", "6", "7", "8", "9"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 40,
+    quantity: 0,
   },
   {
     id: "27",
@@ -317,6 +358,7 @@ export const womenClothes: Product[] = [
     size: ["S", "M", "L", "XL"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 18,
+    quantity: 0,
   },
   {
     id: "28",
@@ -328,6 +370,7 @@ export const womenClothes: Product[] = [
     size: ["S", "M", "L", "XL"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 28,
+    quantity: 0,
   },
   {
     id: "29",
@@ -339,6 +382,7 @@ export const womenClothes: Product[] = [
     size: ["S", "M", "L", "XL"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 22,
+    quantity: 0,
   },
   {
     id: "30",
@@ -350,6 +394,7 @@ export const womenClothes: Product[] = [
     size: ["One Size"],
     imageUrl: "https://via.placeholder.com/150",
     inStock: 30,
+    quantity: 0,
   },
 ];
 
